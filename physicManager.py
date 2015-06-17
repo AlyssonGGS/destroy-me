@@ -18,10 +18,11 @@ class PhysicManager():
                     break#pula o teste do bloco
                 else:
                     if player.image.collided(brick.image):#caso colida com o bloco
-                        player.y = brick.y - player.height#sera mutavel
-                        player.canJump = True#habilita o pulo do player
-                        player.gravity = 0#restaura o valor da gravidade
-                        player.jumpForce = 0
+                        if brick.y > player.x + player.height * 0.4:
+                            player.y = brick.y - player.height#sera mutavel
+                            player.canJump = True#habilita o pulo do player
+                            player.gravity = 0#restaura o valor da gravidade
+                            player.jumpForce = 0
         return
 
     def playerMove(self,deltaT,player):#movimenta os jogadores de acordo com os inputs. Ver metodo input do player
