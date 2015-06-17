@@ -12,6 +12,7 @@ class Player(DynamicGameObject):
         self.height = self.image.height
         self.image.set_position(self.x,self.y)
         #variaveis de uso da classe de fisica -> physicManager
+        self.velocity = 70
         self.jumpForce = 0
         self.gravity = 50
         self.move = 0

@@ -24,10 +24,10 @@ class GameScene(Scene):
     def update(self,deltaT,keyboard):
         self.player.update(keyboard)
         #parte dedicada a atualização da fisica
-        self.physManager.gravity(deltaT,self.gravityObjects)#aplica a gravidade
         self.physManager.collisionPlayerVSBricks(self.player,self.mapMan.bricks)
-        self.physManager.playerMove(deltaT,self.players)#movimento do player
-        self.physManager.applyJump(deltaT,self.players)
+        self.physManager.gravity(deltaT,self.gravityObjects)#aplica a gravidade
+        self.physManager.playerMove(deltaT,self.player)#movimento do player
+        self.physManager.applyJump(deltaT,self.player)
         #--------------------------------------
         return
 
