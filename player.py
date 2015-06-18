@@ -16,12 +16,14 @@ class Player(DynamicGameObject):
         self.jumpForce = 0
         self.gravity = 50
         self.move = 0
+        self.shotDirectionX = 1
+        self.shotDirectionY = 0
         #variaveis de controle interno da classe
         self.canJump = True
         return
 
-    def update(self,keyboard):
-        self.input(keyboard)
+    def update(self,keyboard,deltaT):
+        self.input(keyboard,deltaT)
         return
 
     def draw(self):
@@ -29,13 +31,26 @@ class Player(DynamicGameObject):
         self.image.draw()
         return
 
-    def input(self,kb):
+    def input(self,kb,dt):
         if(kb.key_pressed("RIGHT")):
             self.move = 1
         elif(kb.key_pressed("LEFT")):
             self.move = -1
         else:
             self.move = 0
+
+        if(kb.key_pressed("UP")):
+            self.shotDirectionX -= dt
+            if self.shotDirectionX < -1:
+                self.shotDirectionX = -1
+            self.shotDirectionY = 1 - abs(self.shotDirectionX)
+
+        elif(kb.key_pressed("DOWN")):
+            self.shotDirectionX += dt
+            if self.shotDirectionX > 1:
+                self.shotDirectionX = 1
+            self.shotDirectionY = 1 - abs(self.shotDirectionX)
+
         if(kb.key_pressed("SPACE") and self.canJump):
             self.jump()
             self.canJump = False

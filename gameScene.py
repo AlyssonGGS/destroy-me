@@ -4,6 +4,7 @@ from physicManager import *
 from mapManager import *
 from player import *
 from turnManager import *
+from aim import *
 
 #cena do jogo principal
 class GameScene(Scene):
@@ -16,6 +17,8 @@ class GameScene(Scene):
         #criar os players
         self.player = Player()
         self.player2 = Player()
+        #mira desenhada na tela
+        self.aim = Aim()
         #adiciona as variaveis aos grupos de controle usados pelo gerenciador de fisica
         self.gravityObjects.append(self.player)
         self.gravityObjects.append(self.player2)
@@ -27,13 +30,14 @@ class GameScene(Scene):
         return
 
     def update(self,deltaT,keyboard):
-        self.turnManager.actualPlayer.update(keyboard)
+        self.turnManager.actualPlayer.update(keyboard,deltaT)
         #parte dedicada a atualização da fisica
         for player in self.turnManager.players:
             self.physManager.collisionPlayerVSBricks(player,self.mapMan.bricks)
-        self.physManager.gravity(deltaT,self.gravityObjects)#aplica a gravidade
-        self.physManager.playerMove(deltaT,self.turnManager.actualPlayer)#movimento do player
-        self.physManager.applyJump(deltaT,self.turnManager.actualPlayer)
+        self.physManager.gravity(deltaT, self.gravityObjects)#aplica a gravidade
+        self.physManager.playerMove(deltaT, self.turnManager.actualPlayer)#movimento do player
+        self.physManager.applyJump(deltaT, self.turnManager.actualPlayer)
+        self.aim.update(self.turnManager.actualPlayer)
         #--------------------------------------
         return
 
@@ -42,11 +46,5 @@ class GameScene(Scene):
         self.mapMan.draw()
         for player in self.turnManager.players:
             player.draw()
-        return
-
-    #usado para alguns testes
-    #não entrará no jogo
-    def mostrar(self,cels):
-        for c in cels:
-            print((c))
+        self.aim.draw()
         return
