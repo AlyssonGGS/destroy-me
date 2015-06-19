@@ -53,7 +53,7 @@ class Player(DynamicGameObject):
             self.shotDirectionY = 1 - abs(self.shotDirectionX)
 
         if kb.key_pressed("RETURN"):
-            self.shotForce += dt * 1000
+            self.shotForce += dt * 500
             self.canShot = False
             return
         elif self.shotForce > 0:
@@ -62,9 +62,10 @@ class Player(DynamicGameObject):
         if(kb.key_pressed("SPACE") and self.canJump):
             self.jump()
             self.canJump = False
+            self.gravity = 80
         return
 
     def jump(self):
         self.y -= self.height * 0.1
-        self.jumpForce = 400
+        self.jumpForce = 170
         return

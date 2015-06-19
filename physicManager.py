@@ -18,15 +18,28 @@ class PhysicManager():
                     break#pula o teste do bloco
                 else:
                     if player.image.collided(brick.image):#caso colida com o bloco
-                        if brick.y > player.x + player.height * 0.4:
+                        if brick.y >  player.y + player.height * 0.5:
                             player.y = brick.y - player.height#sera mutavel
                             player.canJump = True#habilita o pulo do player
                             player.gravity = 0#restaura o valor da gravidade
                             player.jumpForce = 0
+                        else:
+                            if player.jumpForce == 0:
+                                if player.x + player.width > brick.x and player.x < brick.x:
+                                    player.x = brick.x - player.width
+                                else:
+                                    player.x = brick.x + brick.width
+
         return
 
     def playerMove(self,deltaT,player):#movimenta os jogadores de acordo com os inputs. Ver metodo input do player
         player.x += player.move * player.velocity * deltaT
+        return
+
+    def collisionPlayerVSBall(self,players,ball):
+        for player in players:
+            if player.image.collided(ball.image):
+                return True
         return
 
     def applyJump(self,deltaT,player):#aplica o efeito de pulo no jogador
@@ -36,7 +49,8 @@ class PhysicManager():
         return
 
     def shotMove(self,shot,dt):
-        shot.x += shot.direction[0] * dt * shot.force
-        shot.y -= shot.direction[1] * dt * shot.force
-        shot.force -= dt * 5
+        if shot.force > 0:
+            shot.x += shot.direction[0] * dt * shot.force
+            shot.y -= shot.direction[1] * dt * shot.force
+            shot.force -= dt * 5
         return

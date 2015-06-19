@@ -36,17 +36,21 @@ class GameScene(Scene):
         self.turnManager.actualPlayer.update(keyboard,deltaT)
         #parte dedicada a atualização da fisica
         for player in self.turnManager.players:
-            self.physManager.collisionPlayerVSBricks(player,self.mapMan.bricks)
+            self.physManager.collisionPlayerVSBricks(player,self.mapMan.bricks)#colisao entre players e blocos
         self.physManager.gravity(deltaT, self.gravityObjects)#aplica a gravidade
+        if self.turnManager.actualPlayer.jumpForce != 0:
+            self.physManager.applyJump(deltaT, self.turnManager.actualPlayer)#faz o calculo do pulo do player atual
         self.physManager.playerMove(deltaT, self.turnManager.actualPlayer)#movimento do player
-        self.physManager.applyJump(deltaT, self.turnManager.actualPlayer)
-        if self.turnManager.actualPlayer.canShot == True:
+        if self.turnManager.actualPlayer.canShot == True:#caso o player possa atirar
             self.turnManager.actualPlayer.canShot = False
             self.createShot()
         if self.shot != None:
             self.physManager.shotMove(self.shot,deltaT)
-        self.aim.update(self.turnManager.actualPlayer)
+            if self.physManager.collisionPlayerVSBall(self.turnManager.othersPlayers,self.shot):
+                self.turnManager.changePlayer()
+                self.shot = None
         #--------------------------------------
+        self.aim.update(self.turnManager.actualPlayer)#a mira segue o jogador
         return
 
     #desenha todos os blocos
