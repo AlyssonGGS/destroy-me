@@ -9,6 +9,7 @@ class Shot(DynamicGameObject):
         self.direction = (0,0)
         self.force = 0
         self.gravity = 50
+        self.destroy = False
         return
 
     def draw(self):

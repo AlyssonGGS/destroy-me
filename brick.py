@@ -15,6 +15,7 @@ class Brick(GameObject):
         self.width = self.image.width
         self.height = self.image.height
         self.image.set_position(x,y)
+        self.destroy = False
         return
 
     def draw(self):

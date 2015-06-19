@@ -13,7 +13,7 @@ class GameScene(Scene):
         #instancia dos grupos de controle do gerenciador de fisica
         self.gravityObjects = []
         self.players = []
-        #objeto que vai gerenciar os blocos. Possivelmente ficará com a maior parte da colisao
+        #objeto que vai gerenciar os blocos. Possivelmente ficara com a maior parte da colisao
         self.mapMan = MapManager()
         #criar os players
         self.player = Player()
@@ -34,7 +34,7 @@ class GameScene(Scene):
 
     def update(self,deltaT,keyboard):
         self.turnManager.actualPlayer.update(keyboard,deltaT)
-        #parte dedicada a atualização da fisica
+        #parte dedicada a atualizacaoo da fisica
         for player in self.turnManager.players:
             self.physManager.collisionPlayerVSBricks(player,self.mapMan.bricks)#colisao entre players e blocos
         self.physManager.gravity(deltaT, self.gravityObjects)#aplica a gravidade
@@ -47,8 +47,9 @@ class GameScene(Scene):
         if self.shot != None:
             self.physManager.shotMove(self.shot,deltaT)
             if self.physManager.collisionPlayerVSBall(self.turnManager.othersPlayers,self.shot):
-                self.turnManager.changePlayer()
-                self.shot = None
+                self.shot.destroy = True
+            self.physManager.collisionBallVsBrick(self.shot,self.mapMan.bricks)
+            self.destroyShot()
         #--------------------------------------
         self.aim.update(self.turnManager.actualPlayer)#a mira segue o jogador
         return
@@ -68,8 +69,15 @@ class GameScene(Scene):
         self.shot._init_()
         self.shot.x = self.aim.x
         self.shot.y = self.aim.y
+        self.shot.image.set_position(self.shot.x,self.shot.y)
         self.shot.force = self.turnManager.actualPlayer.shotForce
         self.turnManager.actualPlayer.shotForce = 0
         self.shot.direction = (self.turnManager.actualPlayer.shotDirectionX,self.turnManager.actualPlayer.shotDirectionY)
         self.gravityObjects.append(self.shot)
+        return
+
+    def destroyShot(self):
+        if self.shot.destroy:
+            self.shot = None
+            self.turnManager.changePlayer()
         return
