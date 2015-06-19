@@ -5,6 +5,7 @@ from mapManager import *
 from player import *
 from turnManager import *
 from aim import *
+from shot import *
 
 #cena do jogo principal
 class GameScene(Scene):
@@ -27,6 +28,8 @@ class GameScene(Scene):
         #gerenciador de fisica do jogo
         self.physManager = PhysicManager()
         self.turnManager = TurnManager(self.players)
+        #tiro
+        self.shot = None
         return
 
     def update(self,deltaT,keyboard):
@@ -37,6 +40,11 @@ class GameScene(Scene):
         self.physManager.gravity(deltaT, self.gravityObjects)#aplica a gravidade
         self.physManager.playerMove(deltaT, self.turnManager.actualPlayer)#movimento do player
         self.physManager.applyJump(deltaT, self.turnManager.actualPlayer)
+        if self.turnManager.actualPlayer.canShot == True:
+            self.turnManager.actualPlayer.canShot = False
+            self.createShot()
+        if self.shot != None:
+            self.physManager.shotMove(self.shot,deltaT)
         self.aim.update(self.turnManager.actualPlayer)
         #--------------------------------------
         return
@@ -47,4 +55,17 @@ class GameScene(Scene):
         for player in self.turnManager.players:
             player.draw()
         self.aim.draw()
+        if self.shot != None:
+            self.shot.draw()
+        return
+
+    def createShot(self):
+        self.shot = Shot()
+        self.shot._init_()
+        self.shot.x = self.aim.x
+        self.shot.y = self.aim.y
+        self.shot.force = self.turnManager.actualPlayer.shotForce
+        self.turnManager.actualPlayer.shotForce = 0
+        self.shot.direction = (self.turnManager.actualPlayer.shotDirectionX,self.turnManager.actualPlayer.shotDirectionY)
+        self.gravityObjects.append(self.shot)
         return

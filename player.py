@@ -18,8 +18,10 @@ class Player(DynamicGameObject):
         self.move = 0
         self.shotDirectionX = 1
         self.shotDirectionY = 0
+        self.shotForce = 0
         #variaveis de controle interno da classe
         self.canJump = True
+        self.canShot = False
         return
 
     def update(self,keyboard,deltaT):
@@ -44,12 +46,18 @@ class Player(DynamicGameObject):
             if self.shotDirectionX < -1:
                 self.shotDirectionX = -1
             self.shotDirectionY = 1 - abs(self.shotDirectionX)
-
         elif(kb.key_pressed("DOWN")):
             self.shotDirectionX += dt
             if self.shotDirectionX > 1:
                 self.shotDirectionX = 1
             self.shotDirectionY = 1 - abs(self.shotDirectionX)
+
+        if kb.key_pressed("RETURN"):
+            self.shotForce += dt * 1000
+            self.canShot = False
+            return
+        elif self.shotForce > 0:
+            self.canShot = True
 
         if(kb.key_pressed("SPACE") and self.canJump):
             self.jump()

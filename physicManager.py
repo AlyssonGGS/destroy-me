@@ -34,3 +34,9 @@ class PhysicManager():
             player.y -= player.jumpForce * deltaT * self.mult#modifica o Y do player de acordo com a força do pulo
             player.jumpForce -= player.jumpForce * deltaT * self.mult#modifica a força do pulo
         return
+
+    def shotMove(self,shot,dt):
+        shot.x += shot.direction[0] * dt * shot.force
+        shot.y -= shot.direction[1] * dt * shot.force
+        shot.force -= dt * 5
+        return
