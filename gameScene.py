@@ -2,32 +2,26 @@ __author__ = 'AlyssonNote'
 from scene import *
 from physicManager import *
 from mapManager import *
-from player import *
+from world import *
 from turnManager import *
 from aim import *
 from shot import *
 
 #cena do jogo principal
 class GameScene(Scene):
-    def __init__(self):
+    def __init__(self,janela):
         #instancia dos grupos de controle do gerenciador de fisica
         self.gravityObjects = []
-        self.players = []
-        #objeto que vai gerenciar os blocos. Possivelmente ficara com a maior parte da colisao
-        self.mapMan = MapManager()
         #criar os players
-        self.player = Player()
-        self.player2 = Player()
+        self.world = World(janela)
         #mira desenhada na tela
         self.aim = Aim()
         #adiciona as variaveis aos grupos de controle usados pelo gerenciador de fisica
-        self.gravityObjects.append(self.player)
-        self.gravityObjects.append(self.player2)
-        self.players.append(self.player)
-        self.players.append(self.player2)
+        for player in self.world.players:
+            self.gravityObjects.append(player)
         #gerenciador de fisica do jogo
         self.physManager = PhysicManager()
-        self.turnManager = TurnManager(self.players)
+        self.turnManager = TurnManager(self.world.players)
         #tiro
         self.shot = None
         return
@@ -36,32 +30,23 @@ class GameScene(Scene):
         self.turnManager.actualPlayer.update(keyboard,deltaT)
         #parte dedicada a atualizacaoo da fisica
         for player in self.turnManager.players:
-            self.physManager.collisionPlayerVSBricks(player,self.mapMan.bricks)#colisao entre players e blocos
+            self.physManager.collisionPlayerVSBricks(player,self.world.mapMan.bricks)#colisao entre players e blocos
         self.physManager.gravity(deltaT, self.gravityObjects)#aplica a gravidade
         if self.turnManager.actualPlayer.jumpForce != 0:
             self.physManager.applyJump(deltaT, self.turnManager.actualPlayer)#faz o calculo do pulo do player atual
-        self.physManager.playerMove(deltaT, self.turnManager.actualPlayer)#movimento do player
         if self.turnManager.actualPlayer.canShot == True:#caso o player possa atirar
             self.turnManager.actualPlayer.canShot = False
             self.createShot()
-        if self.shot != None:
+        if self.shot == None:
+            self.physManager.playerMove(deltaT, self.turnManager.actualPlayer)#movimento do player
+        else:
             self.physManager.shotMove(self.shot,deltaT)
             if self.physManager.collisionPlayerVSBall(self.turnManager.othersPlayers,self.shot):
                 self.shot.destroy = True
-            self.physManager.collisionBallVsBrick(self.shot,self.mapMan.bricks)
-            self.destroyShot()
+            self.physManager.collisionBallVsBrick(self.shot,self.world.mapMan.bricks)
+            self.destroyShot()#destroi o tiro
         #--------------------------------------
         self.aim.update(self.turnManager.actualPlayer)#a mira segue o jogador
-        return
-
-    #desenha todos os blocos
-    def draw(self):
-        self.mapMan.draw()
-        for player in self.turnManager.players:
-            player.draw()
-        self.aim.draw()
-        if self.shot != None:
-            self.shot.draw()
         return
 
     def createShot(self):
@@ -70,10 +55,20 @@ class GameScene(Scene):
         self.shot.x = self.aim.x
         self.shot.y = self.aim.y
         self.shot.image.set_position(self.shot.x,self.shot.y)
-        self.shot.force = self.turnManager.actualPlayer.shotForce
-        self.turnManager.actualPlayer.shotForce = 0
+        self.shot.forceX = self.turnManager.actualPlayer.shotForceX
+        self.shot.forceY = self.turnManager.actualPlayer.shotForceY
+        self.turnManager.actualPlayer.shotForceX = 0
+        self.turnManager.actualPlayer.shotForceY = 0
         self.shot.direction = (self.turnManager.actualPlayer.shotDirectionX,self.turnManager.actualPlayer.shotDirectionY)
         self.gravityObjects.append(self.shot)
+        return
+
+        #desenha todos os blocos
+    def draw(self):
+        self.world.draw(self.turnManager)
+        self.aim.draw()
+        if self.shot != None:
+            self.shot.draw()
         return
 
     def destroyShot(self):

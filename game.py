@@ -1,14 +1,14 @@
 __author__ = 'AlyssonNote'
-from PPlay.window import *
 from gameScene import *
+from PPlay.window import *
 
-janela = Window(1280,720)
-actualScene = GameScene()
+window = Window(1280,720)
+actualScene = GameScene(window)
 while True:
     #roda o update da cena atual
-    actualScene.update(janela.delta_time(),janela.get_keyboard())
+    actualScene.update(window.delta_time(),window.get_keyboard())
     #desenha a cena
-    janela.set_background_color((255,255,255))
+    window.set_background_color((255,255,255))
     actualScene.draw()
     #atualiza a janela
-    janela.update()
+    window.update()

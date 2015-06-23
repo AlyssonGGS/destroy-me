@@ -2,12 +2,12 @@ __author__ = 'AlyssonGeraldo'
 from dynamicGameObject import *
 from PPlay.sprite import *
 class Player(DynamicGameObject):
-    def __init__(self):
+    def __init__(self,x,y):
         DynamicGameObject.__init__(self)
         #criação das coordenas e da imagem
         self.image = Sprite("player.png",1)
-        self.x = 100
-        self.y = 300
+        self.x = x
+        self.y = y
         self.width = self.image.width
         self.height = self.image.height
         self.image.set_position(self.x,self.y)
@@ -18,7 +18,8 @@ class Player(DynamicGameObject):
         self.move = 0
         self.shotDirectionX = 1
         self.shotDirectionY = 0
-        self.shotForce = 0
+        self.shotForceX = 0
+        self.shotForceY = 0
         #variaveis de controle interno da classe
         self.canJump = True
         self.canShot = False
@@ -53,10 +54,11 @@ class Player(DynamicGameObject):
             self.shotDirectionY = 1 - abs(self.shotDirectionX)
 
         if kb.key_pressed("RETURN"):
-            self.shotForce += dt * 500
+            self.shotForceX += dt * 500
+            self.shotForceY += dt * 500
             self.canShot = False
             return
-        elif self.shotForce > 0:
+        elif self.shotForceX > 0:
             self.canShot = True
 
         if(kb.key_pressed("SPACE") and self.canJump):

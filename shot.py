@@ -7,7 +7,8 @@ class Shot(DynamicGameObject):
         print("Ola")
         self.image = GameImage("cannonball.png")
         self.direction = (0,0)
-        self.force = 0
+        self.forceX = 0
+        self.forceY = 0
         self.gravity = 50
         self.destroy = False
         return

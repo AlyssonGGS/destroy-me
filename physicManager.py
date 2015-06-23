@@ -7,7 +7,7 @@ class PhysicManager():
     def gravity(self,deltaT,gameObjects):#metodo so recebera objectos dinamicos. Provavelmente nao recebera o tiro
         for gameObject in gameObjects:#para cada Game Object
             gameObject.y += gameObject.gravity * deltaT * self.mult #aplica a forca no Y  do Game Object para faze-lo descer
-            if gameObject.gravity < 300:
+            if gameObject.gravity < 500:
                 gameObject.gravity += 80 * deltaT * self.mult#aumenta o valor da gravidade
         return
 
@@ -18,14 +18,14 @@ class PhysicManager():
                     break#pula o teste do bloco
                 else:
                     if player.image.collided(brick.image):#caso colida com o bloco
-                        if brick.y >  player.y + player.height * 0.5:
-                            player.y = brick.y - player.height#sera mutavel
+                        if brick.y > player.y + player.height * 0.8:
+                            player.y = brick.y - player.height
                             player.canJump = True#habilita o pulo do player
                             player.gravity = 0#restaura o valor da gravidade
                             player.jumpForce = 0
                         else:
                             if player.jumpForce == 0:
-                                if player.x + player.width > brick.x and player.x < brick.x:
+                                if player.x + player.width > brick.x > player.x:
                                     player.x = brick.x - player.width
                                 else:
                                     player.x = brick.x + brick.width
@@ -41,6 +41,7 @@ class PhysicManager():
                         bricks[i].pop(j)
                         return
         return
+
     def playerMove(self,deltaT,player):#movimenta os jogadores de acordo com os inputs. Ver metodo input do player
         player.x += player.move * player.velocity * deltaT
         return
@@ -59,8 +60,8 @@ class PhysicManager():
         return
 
     def shotMove(self,shot,dt):
-        if shot.force > 0:
-            shot.x += shot.direction[0] * dt * shot.force
-            shot.y -= shot.direction[1] * dt * shot.force
-            shot.force -= dt * 5
+        shot.x += shot.direction[0] * dt * shot.forceX
+        shot.y -= shot.direction[1] * dt * shot.forceY
+        if shot.forceY > 0:
+            shot.forceY -= dt * 5
         return
