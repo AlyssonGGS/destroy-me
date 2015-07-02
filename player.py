@@ -2,7 +2,7 @@ __author__ = 'AlyssonGeraldo'
 from dynamicGameObject import *
 from PPlay.sprite import *
 class Player(DynamicGameObject):
-    def __init__(self,x,y):
+    def __init__(self,x,y,maxLife):
         DynamicGameObject.__init__(self)
         #criação das coordenas e da imagem
         self.image = Sprite("player.png",1)
@@ -11,6 +11,7 @@ class Player(DynamicGameObject):
         self.width = self.image.width
         self.height = self.image.height
         self.image.set_position(self.x,self.y)
+        self.life = maxLife
         #variaveis de uso da classe de fisica -> physicManager
         self.velocity = 70
         self.jumpForce = 0

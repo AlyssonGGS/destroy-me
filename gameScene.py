@@ -1,19 +1,20 @@
 __author__ = 'AlyssonNote'
 from scene import *
 from physicManager import *
-from mapManager import *
 from world import *
 from turnManager import *
 from aim import *
 from shot import *
+from PlayerUI import *
 
 #cena do jogo principal
 class GameScene(Scene):
     def __init__(self,janela):
+        self.maxLife = 3
         #instancia dos grupos de controle do gerenciador de fisica
         self.gravityObjects = []
         #criar os players
-        self.world = World(janela)
+        self.world = World(janela,self.maxLife)
         #mira desenhada na tela
         self.aim = Aim()
         #adiciona as variaveis aos grupos de controle usados pelo gerenciador de fisica
@@ -24,6 +25,7 @@ class GameScene(Scene):
         self.turnManager = TurnManager(self.world.players)
         #tiro
         self.shot = None
+        self.playerUI = PlayerUI(self.maxLife,len(self.world.players))
         return
 
     def update(self,deltaT,keyboard):
@@ -47,6 +49,7 @@ class GameScene(Scene):
             self.destroyShot()#destroi o tiro
         #--------------------------------------
         self.aim.update(self.turnManager.actualPlayer)#a mira segue o jogador
+        self.playerUI.update(self.world.players)
         return
 
     def createShot(self):
@@ -69,6 +72,7 @@ class GameScene(Scene):
         self.aim.draw()
         if self.shot != None:
             self.shot.draw()
+        self.playerUI.draw(self.world.players)
         return
 
     def destroyShot(self):

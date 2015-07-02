@@ -50,6 +50,7 @@ class PhysicManager():
         for player in players:
             if player.image.collided(ball.image):
                 ball.destroy = True
+                player.life -= 1
                 return True
         return
 
