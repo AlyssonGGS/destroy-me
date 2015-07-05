@@ -5,12 +5,15 @@ class Player(DynamicGameObject):
     def __init__(self,x,y,maxLife):
         DynamicGameObject.__init__(self)
         #criação das coordenas e da imagem
-        self.image = Sprite("player.png",1)
+        self.image = Sprite("player.png", 1)
+        self.imageI = Sprite("playerI.png", 1)
+        self.actualImage = self.image
         self.x = x
         self.y = y
         self.width = self.image.width
         self.height = self.image.height
         self.image.set_position(self.x,self.y)
+        self.imageI.set_position(self.x,self.y)
         self.life = maxLife
         #variaveis de uso da classe de fisica -> physicManager
         self.velocity = 70
@@ -28,11 +31,15 @@ class Player(DynamicGameObject):
 
     def update(self,keyboard,deltaT):
         self.input(keyboard,deltaT)
+        if self.shotDirectionX < 0:
+            self.actualImage = self.imageI
+        else:
+            self.actualImage = self.image
         return
 
     def draw(self):
-        self.image.set_position(self.x,self.y)
-        self.image.draw()
+        self.actualImage.set_position(self.x,self.y)
+        self.actualImage.draw()
         return
 
     def input(self,kb,dt):
@@ -58,17 +65,19 @@ class Player(DynamicGameObject):
             self.shotForceX += dt * 500
             self.shotForceY += dt * 500
             self.canShot = False
+            self.move = 0
             return
         elif self.shotForceX > 0:
             self.canShot = True
 
         if(kb.key_pressed("SPACE") and self.canJump):
             self.jump()
-            self.canJump = False
-            self.gravity = 80
+
         return
 
     def jump(self):
         self.y -= self.height * 0.1
-        self.jumpForce = 170
+        self.jumpForce = 300
+        self.canJump = False
+        self.gravity = 80
         return

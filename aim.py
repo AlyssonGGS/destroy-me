@@ -8,7 +8,7 @@ class Aim():
         return
 
     def update(self, player):
-        self.x = (player.x + player.width /2) + player.width * player.shotDirectionX
+        self.x = (player.x + player.width / 2) + (player.width * 1.2) * player.shotDirectionX - self.image.width/2
         self.y = player.y - (player.width ** 2 - (player.width * player.shotDirectionX) ** 2)**0.5 + self.image.height/2
         return
 

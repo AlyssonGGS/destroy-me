@@ -8,9 +8,10 @@ class World():
         self.x = 0
         self.y = 0
         self.players = []
-        self.createPlayer(200,200,maxLife)
-        self.createPlayer(100,100,maxLife)
         self.mapMan = MapManager()
+        for i in range(1,-1,-1):
+            pos = self.mapMan.getPlayerPosition(i)
+            self.createPlayer(pos[0],pos[1],maxLife)
         return
 
     def createPlayer(self,x,y,mLife):

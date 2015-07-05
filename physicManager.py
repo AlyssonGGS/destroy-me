@@ -12,24 +12,25 @@ class PhysicManager():
         return
 
     def collisionPlayerVSBricks(self,player,bricks):#colissao entre o player atual e cada bloco
+        if player.x + player.width < 0 or player.x > 1280 or player.y > 720:
+            player.life = 0
+            return
         for i in range(len(bricks)):#percorre a lista de blocos
             for brick in bricks[i]:#escolhe cada bloco na lista de blocos
                 if brick == None or brick.y - brick.height / 2 > player.y + player.height/2:#caso o bloco nao exista ou nao esteja a uma distancia razoavel do player
                     break#pula o teste do bloco
                 else:
-                    if player.image.collided(brick.image):#caso colida com o bloco
+                    if player.actualImage.collided(brick.image):#caso colida com o bloco
                         if brick.y > player.y + player.height * 0.8:
                             player.y = brick.y - player.height
                             player.canJump = True#habilita o pulo do player
                             player.gravity = 0#restaura o valor da gravidade
                             player.jumpForce = 0
                         else:
-                            if player.jumpForce == 0:
                                 if player.x + player.width > brick.x > player.x:
                                     player.x = brick.x - player.width
                                 else:
                                     player.x = brick.x + brick.width
-
         return
 
     def collisionBallVsBrick(self,ball,bricks):
@@ -48,7 +49,7 @@ class PhysicManager():
 
     def collisionPlayerVSBall(self,players,ball):
         for player in players:
-            if player.image.collided(ball.image):
+            if player.actualImage.collided(ball.image):
                 ball.destroy = True
                 player.life -= 1
                 return True

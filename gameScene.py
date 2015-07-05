@@ -25,7 +25,7 @@ class GameScene(Scene):
         self.turnManager = TurnManager(self.world.players)
         #tiro
         self.shot = None
-        self.playerUI = PlayerUI(self.maxLife,len(self.world.players))
+        self.playerUI = PlayerUI(self.maxLife,len(self.world.players),janela)
         return
 
     def update(self,deltaT,keyboard):
@@ -43,21 +43,20 @@ class GameScene(Scene):
             self.physManager.playerMove(deltaT, self.turnManager.actualPlayer)#movimento do player
         else:
             self.physManager.shotMove(self.shot,deltaT)
-            if self.physManager.collisionPlayerVSBall(self.turnManager.othersPlayers,self.shot):
+            if self.physManager.collisionPlayerVSBall(self.turnManager.players,self.shot):
                 self.shot.destroy = True
             self.physManager.collisionBallVsBrick(self.shot,self.world.mapMan.bricks)
             self.destroyShot()#destroi o tiro
         #--------------------------------------
         self.aim.update(self.turnManager.actualPlayer)#a mira segue o jogador
         self.playerUI.update(self.world.players)
+        for playerID in range(len(self.world.players)):
+            if self.world.players[playerID].life == 0:
+                return "GO"+str((playerID + 1) % len(self.world.players))
         return
 
     def createShot(self):
-        self.shot = Shot()
-        self.shot._init_()
-        self.shot.x = self.aim.x
-        self.shot.y = self.aim.y
-        self.shot.image.set_position(self.shot.x,self.shot.y)
+        self.shot = Shot(self.aim)
         self.shot.forceX = self.turnManager.actualPlayer.shotForceX
         self.shot.forceY = self.turnManager.actualPlayer.shotForceY
         self.turnManager.actualPlayer.shotForceX = 0
@@ -76,7 +75,7 @@ class GameScene(Scene):
         return
 
     def destroyShot(self):
-        if self.shot.destroy:
+        if self.shot.destroy or self.shot.x > 1280 or self.shot.x < 0 or self.shot.y > 720 or self.shot.y < 0:
             self.shot = None
             self.turnManager.changePlayer()
         return
