@@ -33,7 +33,7 @@ class PhysicManager():
                                     player.x = brick.x + brick.width
         return
 
-    def collisionBallVsBrick(self,ball,bricks):
+    def collisionBrickVSShot(self,ball,bricks):
         for i in range(len(bricks)):
             for j in range(len(bricks[i])):
                 if bricks[i][j] != None:
@@ -47,10 +47,10 @@ class PhysicManager():
         player.x += player.move * player.velocity * deltaT
         return
 
-    def collisionPlayerVSBall(self,players,ball):
+    def collisionPlayerVSShot(self,players,shot):
         for player in players:
-            if player.actualImage.collided(ball.image):
-                ball.destroy = True
+            if player.actualImage.collided(shot.image):
+                shot.destroy = True
                 player.life -= 1
                 return True
         return

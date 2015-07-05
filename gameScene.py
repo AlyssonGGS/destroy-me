@@ -6,6 +6,7 @@ from turnManager import *
 from aim import *
 from shot import *
 from PlayerUI import *
+from soundManager import *
 
 #cena do jogo principal
 class GameScene(Scene):
@@ -26,6 +27,8 @@ class GameScene(Scene):
         #tiro
         self.shot = None
         self.playerUI = PlayerUI(self.maxLife,len(self.world.players),janela)
+        #sons
+        self.soundMan = SoundManager()
         return
 
     def update(self,deltaT,keyboard):
@@ -34,25 +37,25 @@ class GameScene(Scene):
         for player in self.turnManager.players:
             self.physManager.collisionPlayerVSBricks(player,self.world.mapMan.bricks)#colisao entre players e blocos
         self.physManager.gravity(deltaT, self.gravityObjects)#aplica a gravidade
-        if self.turnManager.actualPlayer.jumpForce != 0:
+        if self.turnManager.actualPlayer.jumpForce > 0:#caso ntenha força pra pular
             self.physManager.applyJump(deltaT, self.turnManager.actualPlayer)#faz o calculo do pulo do player atual
-        if self.turnManager.actualPlayer.canShot == True:#caso o player possa atirar
-            self.turnManager.actualPlayer.canShot = False
+        if self.turnManager.actualPlayer.shooted and not self.shot:#caso o player possa atirar
+            self.soundMan.playSound("shot")
             self.createShot()
-        if self.shot == None:
+        if not self.shot:
             self.physManager.playerMove(deltaT, self.turnManager.actualPlayer)#movimento do player
         else:
             self.physManager.shotMove(self.shot,deltaT)
-            if self.physManager.collisionPlayerVSBall(self.turnManager.players,self.shot):
+            if self.physManager.collisionPlayerVSShot(self.turnManager.players,self.shot):
                 self.shot.destroy = True
-            self.physManager.collisionBallVsBrick(self.shot,self.world.mapMan.bricks)
+            self.physManager.collisionBrickVSShot(self.shot,self.world.mapMan.bricks)
             self.destroyShot()#destroi o tiro
         #--------------------------------------
         self.aim.update(self.turnManager.actualPlayer)#a mira segue o jogador
         self.playerUI.update(self.world.players)
         for playerID in range(len(self.world.players)):
             if self.world.players[playerID].life == 0:
-                return "GO"+str((playerID + 1) % len(self.world.players))
+                return "GO"+ str((playerID + 1) % len(self.world.players))
         return
 
     def createShot(self):

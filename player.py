@@ -1,32 +1,37 @@
 __author__ = 'AlyssonGeraldo'
 from dynamicGameObject import *
 from PPlay.sprite import *
+from soundManager import *
 class Player(DynamicGameObject):
-    def __init__(self,x,y,maxLife):
+    def __init__(self,x,y,maxLife,side):
         DynamicGameObject.__init__(self)
         #criação das coordenas e da imagem
-        self.image = Sprite("player.png", 1)
-        self.imageI = Sprite("playerI.png", 1)
-        self.actualImage = self.image
         self.x = x
         self.y = y
+        self.image = Sprite("player.png", 1)
+        self.imageI = Sprite("playerI.png", 1)
+        if side == "r":
+            self.actualImage = self.image
+            self.shotDirectionX = 1
+        else:
+            self.actualImage = self.imageI
+            self.shotDirectionX = -1
+        self.shotDirectionY = 0
         self.width = self.image.width
         self.height = self.image.height
-        self.image.set_position(self.x,self.y)
-        self.imageI.set_position(self.x,self.y)
+        self.refreshPosition()
+        #vidas
         self.life = maxLife
         #variaveis de uso da classe de fisica -> physicManager
         self.velocity = 70
         self.jumpForce = 0
         self.gravity = 50
         self.move = 0
-        self.shotDirectionX = 1
-        self.shotDirectionY = 0
         self.shotForceX = 0
         self.shotForceY = 0
         #variaveis de controle interno da classe
         self.canJump = True
-        self.canShot = False
+        self.shooted = False
         return
 
     def update(self,keyboard,deltaT):
@@ -38,7 +43,7 @@ class Player(DynamicGameObject):
         return
 
     def draw(self):
-        self.actualImage.set_position(self.x,self.y)
+        self.refreshPosition()
         self.actualImage.draw()
         return
 
@@ -64,11 +69,10 @@ class Player(DynamicGameObject):
         if kb.key_pressed("RETURN"):
             self.shotForceX += dt * 500
             self.shotForceY += dt * 500
-            self.canShot = False
             self.move = 0
             return
         elif self.shotForceX > 0:
-            self.canShot = True
+            self.shooted = True
 
         if(kb.key_pressed("SPACE") and self.canJump):
             self.jump()
@@ -80,4 +84,10 @@ class Player(DynamicGameObject):
         self.jumpForce = 300
         self.canJump = False
         self.gravity = 80
+        return
+
+    def refreshPosition(self):
+        self.image.set_position(self.x,self.y)
+        self.imageI.set_position(self.x,self.y)
+        self.actualImage.set_position(self.x,self.y)
         return

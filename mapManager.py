@@ -6,7 +6,7 @@ class MapManager():
     def __init__(self):
         #cria os blocos
         self.possiblePlayerPosition = []
-        self.bricks = self.createBrick("map2")
+        self.bricks = self.createBrick("map1")
         print(self.possiblePlayerPosition)
         return
 

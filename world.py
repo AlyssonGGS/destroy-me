@@ -15,7 +15,10 @@ class World():
         return
 
     def createPlayer(self,x,y,mLife):
-        player = Player(x,y,mLife)
+        side = "r"
+        if x > 640:
+            side = "l"
+        player = Player(x,y,mLife,side)
         self.players.append(player)
         return
 

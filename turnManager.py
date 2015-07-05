@@ -10,6 +10,7 @@ class TurnManager():
         return
 
     def changePlayer(self):
+        self.actualPlayer.shooted = False
         self.turn += 1#acrescenta o turno
         self.actualPlayer = self.players[self.turn%len(self.players)]# de acordo com o resto da divisao pelo numero total de players, seleciona o player atual
         #self.changeOtherPlayers()#seleciona os outros jogadores
